@@ -1,0 +1,13 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual Environment
+venv/
+
+# Environment variables and API keys
+.env
+.google_credentials.json
+
+# SQLite database file (if it contains sensitive info; otherwise, you can keep it)
+search_results.db

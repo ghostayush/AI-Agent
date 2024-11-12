@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+</head>
+<body>
+    <div class="container">
+        <h1 class="my-4">AI Agent Project Dashboard</h1>
+        
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-info">
+                    <ul>
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <!-- File Upload Form -->
+        <form action="/upload_csv" method="post" enctype="multipart/form-data" class="mb-4">
+            <div class="form-group">
+                <input type="file" name="file" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Upload CSV</button>
+        </form>
+        
+        <!-- Google Sheet Connection -->
+        <form action="/connect_sheets" method="post" class="mb-4">
+            <div class="form-group">
+                <input type="text" name="sheet_url" placeholder="Google Sheet URL" class="form-control" required />
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Connect Google Sheet</button>
+        </form>
+
+        <!-- Display Google Sheet Preview (optional) -->
+        {% if preview_data %}
+            <h2>Data Preview</h2>
+            <div class="table-responsive">
+                {{ preview_data | safe }}
+            </div>
+        {% endif %}
+        
+        <!-- Query Form -->
+        <form id="queryForm" action="/process_query" method="post" class="mb-4">
+            <div class="form-group">
+                <label for="column_name">Select Column:</label>
+                <select name="column_name" id="column_name" class="form-control">
+                    {% for column in columns %}
+                        <option value="{{ column }}">{{ column }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="query_template">Enter Your Query Template:</label>
+                <input type="text" name="query_template" id="query_template" placeholder="E.g., net worth of {Column}" class="form-control" />
+                <small class="form-text text-muted">
+                    Use "{Column}" exactly as shown to represent the selected column's data in your query. 
+                    Example: "net worth of {Column}" will extract data based on the column you select in the dropdown above. 
+                    Ensure you do not change "{Column}" in the query template; only select the appropriate column in the dropdown.
+                </small>
+            </div>
+            <button type="submit" class="btn btn-success btn-block">Generate Queries</button>
+        </form>
+
+        <!-- Display Generated Queries -->
+        {% if queries %}
+            <h2>Generated Queries:</h2>
+            <ul class="list-group">
+                {% for query in queries %}
+                    <li class="list-group-item">{{ query }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        
+        <!-- Display Search Results from Database -->
+        <div id="search-results">
+        <h2>Search Results</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Query</th>
+                        <th>URL</th>
+                        <th>Snippet</th>
+                        <th>Extracted_data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                    <tr>
+                    <td>{{ result['query'] }}</td>
+                    <td><a href="{{ result['url'] }}" target="_blank">{{ result['url'] }}</a></td>
+                    <td>{{ result['snippet'] }}</td>
+                    <td>{{ result['extracted_data'] }}</td> <!-- Display extracted info -->
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        </div>
+
+        <!-- Download CSV button -->
+        <div id="download-buttons">
+        <a href="/download_csv" class="btn btn-primary my-3">Download CSV</a>
+        </div>
+
+        <!-- Google Sheets Update Button -->
+        <div id="update-sheet-form" class="my-4">
+            <h3>Update Google Sheet</h3>
+            <form action="{{ url_for('update_google_sheet') }}" method="post" class="border p-4 rounded shadow-sm">
+                <div class="form-group">
+                    <input type="text" name="sheet_url" placeholder="Enter Google Sheet URL" class="form-control" required>
+                    <small class="form-text text-muted">
+                        Add Google sheet in which you wana see this data .make sure the Google sheet has edit access
+                    </small>
+                </div>
+                <button type="submit" class="btn btn-success btn-block">Update Google Sheet</button>
+            </form>
+        </div>
+
+        <form action="{{ url_for('end_project') }}" method="POST">
+            <button type="submit" class="btn btn-danger">End Project</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </body>
+</html>
