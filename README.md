@@ -90,5 +90,4 @@ This project includes the following optional features to enhance functionality:
 
 ---
 
-
-[Watch the AI-AGENT Intro Video]([https://vimeo.com/YOUR_VIDEO_ID](https://drive.google.com/file/d/1OykPDchDwwox_k-gyn9iYJTp3t-laob_/view?usp=sharing))
+[Watch the AI-AGENT Intro Video](https://drive.google.com/file/d/1OykPDchDwwox_k-gyn9iYJTp3t-laob_/view?usp=sharing)
